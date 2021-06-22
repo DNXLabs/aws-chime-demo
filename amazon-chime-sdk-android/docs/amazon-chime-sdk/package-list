@@ -1,0 +1,19 @@
+$dokka.format:html
+$dokka.linkExtension:html
+$dokka.location:com.amazonaws.services.chime.sdk.meetings.analytics$toJsonString(kotlin.collections.MutableMap((com.amazonaws.services.chime.sdk.meetings.analytics.EventAttributeName, kotlin.Any)))com.amazonaws.services.chime.sdk.meetings.analytics/kotlin.collections.-mutable-map/to-json-string.html
+com.amazonaws.services.chime.sdk.meetings.analytics
+com.amazonaws.services.chime.sdk.meetings.audiovideo
+com.amazonaws.services.chime.sdk.meetings.audiovideo.audio.activespeakerdetector
+com.amazonaws.services.chime.sdk.meetings.audiovideo.audio.activespeakerpolicy
+com.amazonaws.services.chime.sdk.meetings.audiovideo.contentshare
+com.amazonaws.services.chime.sdk.meetings.audiovideo.metric
+com.amazonaws.services.chime.sdk.meetings.audiovideo.video
+com.amazonaws.services.chime.sdk.meetings.audiovideo.video.buffer
+com.amazonaws.services.chime.sdk.meetings.audiovideo.video.capture
+com.amazonaws.services.chime.sdk.meetings.audiovideo.video.gl
+com.amazonaws.services.chime.sdk.meetings.device
+com.amazonaws.services.chime.sdk.meetings.realtime
+com.amazonaws.services.chime.sdk.meetings.realtime.datamessage
+com.amazonaws.services.chime.sdk.meetings.session
+com.amazonaws.services.chime.sdk.meetings.utils
+com.amazonaws.services.chime.sdk.meetings.utils.logger

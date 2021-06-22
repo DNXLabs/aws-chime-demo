@@ -1,0 +1,20 @@
+version: '3.2'
+
+services:
+  aws:
+    image: dnxsolutions/aws-v2:2.2.9-dnx3
+    entrypoint: '/bin/bash -c'
+    env_file:
+      - .env
+
+  serverless:
+    image: dnxsolutions/serverless:2.11.1-dnx1
+    working_dir: /work
+    entrypoint: '/bin/bash -c'
+    ports:
+      - 8080:8080
+      - 8081:8081
+    env_file:
+      - .env
+    volumes:
+      - ..:/work
