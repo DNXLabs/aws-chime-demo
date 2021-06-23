@@ -34,6 +34,8 @@ exports.index = async (event, context, callback) => {
 };
 
 exports.join = async(event, context) => {
+  // Add your authentication and authorization here
+
   const query = event.queryStringParameters;
   if (!query.title || !query.name || !query.region) {
     return response(400, 'application/json', JSON.stringify({error: 'Need parameters: title, name, region'}));

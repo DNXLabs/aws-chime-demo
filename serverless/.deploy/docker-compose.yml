@@ -8,7 +8,7 @@ services:
       - .env
 
   serverless:
-    image: dnxsolutions/serverless:2.11.1-dnx1
+    image: dnxsolutions/serverless:2.48.0-dnx2
     working_dir: /work
     entrypoint: '/bin/bash -c'
     ports:

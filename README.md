@@ -4,9 +4,12 @@
 - [Android](amazon-chime-sdk-android)
 - [Browser](browser)
 - [Serverless](serverless)
+- [Recording](recording)
 - [Singlejs](singlejs)
 
 
 Amazon Chime SDK Meeting Demo URL:
 
-https://rwncrdre8a.execute-api.ap-southeast-2.amazonaws.com/Prod/
+https://chime.labs2.dnx.host/
+
+Recording API: https://chime.labs2.dnx.host/recording/recording

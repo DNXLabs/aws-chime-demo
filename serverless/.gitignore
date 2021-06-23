@@ -4,3 +4,4 @@ src/index.html
 src/indexV2.html
 src/aws-embedded-metrics
 node_modules
+build
