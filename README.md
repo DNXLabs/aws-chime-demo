@@ -11,7 +11,10 @@
 
 - [Cognito](COGNITO.md)
 - [Chime](CHIME.md)
+- [API Gateway](API-GATEWAY.md)
 
+
+---
 
 Amazon Chime SDK Meeting Demo URL:
 
