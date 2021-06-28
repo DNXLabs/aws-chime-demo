@@ -7,6 +7,11 @@
 - [Recording](recording)
 - [Singlejs](singlejs)
 
+## Docs
+
+- [Cognito](COGNITO.md)
+- [Chime](CHIME.md)
+
 
 Amazon Chime SDK Meeting Demo URL:
 
@@ -18,6 +23,19 @@ Recording API: https://chime.labs2.dnx.host/recording/recording
 ## HLD
 
 ![hld](images/hld.png)
+
+
+## Meeting extend information
+
+The meetings end when you run the [DeleteMeeting](https://docs.aws.amazon.com/chime/latest/APIReference/API_DeleteMeeting.html) API action. A meeting automatically ends after a period of inactivity, such as the following:
+
+- No audio connections are present in the meeting for more than five minutes.
+
+- Less than two audio connections are present in the meeting for more than 30 minutes.
+
+- Screen share viewer connections are inactive for more than 30 minutes.
+
+- The meeting time exceeds 24 hours.
 
 ## Pricing
 
