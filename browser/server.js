@@ -11,6 +11,8 @@ const { v4: uuidv4 } = require('uuid');
 // Store created meetings in a map so attendees can join by meeting title.
 const meetingTable = {};
 
+const allowedMeetingCreators = ['a42cbb78-58e5-464a-b5cd-dd7f24dd9ad0'];
+
 // Load the contents of the web application to be used as the index page.
 const app = process.env.npm_config_app || 'meetingV2';
 const indexPagePath = `dist/${app}.html`;
@@ -48,23 +50,25 @@ function serve(host = '0.0.0.0:8080') {
 
         // Add your authentication and authorization here
 
-        if (!requestUrl.query.title || !requestUrl.query.name || !requestUrl.query.region) {
-          throw new Error('Need parameters: title, name, region');
+        if (!requestUrl.query.title || !requestUrl.query.name || !requestUrl.query.region || !requestUrl.query.uid) {
+          throw new Error('Need parameters: title, name, region, uid');
         }
 
         // Look up the meeting by its title. If it does not exist, create the meeting.
         if (!meetingTable[requestUrl.query.title]) {
-          meetingTable[requestUrl.query.title] = await chime.createMeeting({
-            // Use a UUID for the client request token to ensure that any request retries
-            // do not create multiple meetings.
-            ClientRequestToken: uuidv4(),
-            // Specify the media region (where the meeting is hosted).
-            // In this case, we use the region selected by the user.
-            MediaRegion: requestUrl.query.region,
-            // Any meeting ID you wish to associate with the meeting.
-            // For simplicity here, we use the meeting title.
-            ExternalMeetingId: requestUrl.query.title.substring(0, 64),
-          }).promise();
+          if (allowedMeetingCreators.find(requestUrl.query.uid)) {
+            meetingTable[requestUrl.query.title] = await chime.createMeeting({
+              // Use a UUID for the client request token to ensure that any request retries
+              // do not create multiple meetings.
+              ClientRequestToken: uuidv4(),
+              // Specify the media region (where the meeting is hosted).
+              // In this case, we use the region selected by the user.
+              MediaRegion: requestUrl.query.region,
+              // Any meeting ID you wish to associate with the meeting.
+              // For simplicity here, we use the meeting title.
+              ExternalMeetingId: requestUrl.query.title.substring(0, 64),
+            }).promise();
+          }
         }
 
         // Fetch the meeting info

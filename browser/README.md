@@ -2,6 +2,9 @@
 
 This demo shows how to use the Amazon Chime SDK to build meeting applications for browsers.
 
+
+https://chime.auth.ap-southeast-2.amazoncognito.com/login?reponse_type=code&client_id=34m05h28rvbc2tb22oenmc87l9&redirect_usri=https://chime.labs2.dnx.host
+
 ### Prerequisites
 
 To build, test, and run demos from source you will need:

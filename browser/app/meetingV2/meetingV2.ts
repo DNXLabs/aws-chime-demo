@@ -69,7 +69,7 @@ let SHOULD_EARLY_CONNECT = (() => {
 })();
 
 let SHOULD_DIE_ON_FATALS = (() => {
-  const isLocal = document.location.host === '0.0.0.0:8080' || document.location.host === '0.0.0.0:8080';
+  const isLocal = document.location.host === 'localhost:8080' || document.location.host === 'localhost:8080';
   const fatalYes = document.location.search.includes('fatal=1');
   const fatalNo = document.location.search.includes('fatal=0');
   return fatalYes || (isLocal && !fatalNo);
@@ -251,6 +251,8 @@ export class DemoMeetingApp
   voiceConnectorId: string | null = null;
   sipURI: string | null = null;
   region: string | null = null;
+  accessToken: string | null = null;
+  uid: string | null = null;
   meetingSession: MeetingSession | null = null;
   priorityBasedDownlinkPolicy: VideoPriorityBasedPolicy | null = null;
   audioVideo: AudioVideoFacade | null = null;
@@ -468,6 +470,53 @@ export class DemoMeetingApp
     this.openAudioInputFromSelectionAndPreview();
   }
 
+  public cognitoAuth(): any {
+    var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+
+    var poolData = {
+      UserPoolId: 'ap-southeast-2_oY1cJvhBA', // Your user pool id here
+      ClientId: '44kdb00flduqeuc7ms8cmej12s', // Your client id here
+    };
+
+    var CognitoUserPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var authenticationData = {
+      Username: (document.getElementById('inputUsername') as HTMLInputElement).value,
+      Password: (document.getElementById('inputPassword') as HTMLInputElement).value,
+    };
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+      authenticationData
+    );
+    var userData = {
+      Username: (document.getElementById('inputUsername') as HTMLInputElement).value,
+      Pool: CognitoUserPool,
+    };
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+    cognitoUser.authenticateUser(authenticationDetails, {
+      onSuccess: function(result: any) {
+        this.accessToken = result.getAccessToken().getJwtToken();
+        console.log('Successfully logged!');
+
+        console.log(cognitoUser)
+
+        cognitoUser.getUserAttributes(function(err: any, result: any) {
+          if (err) {
+            alert(err.message || JSON.stringify(err));
+            return;
+          }
+          console.log(result[0].getName()) // sub
+          console.log(result[0].getValue())
+          this.uid = result[0].getValue()
+        });
+      },
+
+      onFailure: function(err: any) {
+        console.log(err);
+        alert(err.message || JSON.stringify(err));
+      },
+    });
+  }
+
   initEventListeners(): void {
     if (!this.defaultBrowserBehaviour.hasChromiumWebRTC()) {
       (document.getElementById('simulcast') as HTMLInputElement).disabled = true;
@@ -475,6 +524,9 @@ export class DemoMeetingApp
     }
 
     document.getElementById('form-authenticate').addEventListener('submit', e => {
+      
+
+
       e.preventDefault();
       this.meeting = (document.getElementById('inputMeeting') as HTMLInputElement).value;
       this.name = (document.getElementById('inputName') as HTMLInputElement).value;
@@ -606,11 +658,15 @@ export class DemoMeetingApp
             const response = await fetch(
               `${DemoMeetingApp.BASE_URL}join?title=${encodeURIComponent(
                 this.meeting
-              )}&name=${encodeURIComponent(DemoMeetingApp.DID)}&region=${encodeURIComponent(
-                region
+              )}&name=${encodeURIComponent(DemoMeetingApp.DID
+              )}&region=${encodeURIComponent(region
+              )}&uid=${encodeURIComponent(this.uid
               )}`,
               {
                 method: 'POST',
+                headers: {
+                  'Authorization': this.accessToken
+                }
               }
             );
             const json = await response.json();
@@ -1701,9 +1757,12 @@ export class DemoMeetingApp
     const response = await fetch(
       `${DemoMeetingApp.BASE_URL}join?title=${encodeURIComponent(
         this.meeting
-      )}&name=${encodeURIComponent(this.name)}&region=${encodeURIComponent(this.region)}`,
+      )}&name=${encodeURIComponent(this.name)}&region=${encodeURIComponent(this.region)}&uid=${encodeURIComponent('a42cbb78-58e5-464a-b5cd-dd7f24dd9ad0')}`,
       {
         method: 'POST',
+        headers: {
+          'Authorization': this.accessToken
+        }
       }
     );
     const json = await response.json();

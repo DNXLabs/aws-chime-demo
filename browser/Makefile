@@ -45,6 +45,6 @@ shell-aws: .env
 
 shell-sls: .env
 	@echo "make shell-sls"
-	docker-compose -f $(PATH_DEPLOY)/docker-compose.yml run --rm serverless \
+	docker-compose -f $(PATH_DEPLOY)/docker-compose.yml run --rm --service-ports serverless \
 	"/bin/bash"
 .PHONY: shell-sls
