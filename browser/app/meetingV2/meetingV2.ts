@@ -65,6 +65,7 @@ import {
 } from './videofilter/SegmentationUtil';
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+var accessToken = ""
 
 let SHOULD_EARLY_CONNECT = (() => {
   return document.location.search.includes('earlyConnect=1');
@@ -253,8 +254,6 @@ export class DemoMeetingApp
   voiceConnectorId: string | null = null;
   sipURI: string | null = null;
   region: string | null = null;
-  accessToken: string | null = null;
-  uid: string | null = null;
   meetingSession: MeetingSession | null = null;
   priorityBasedDownlinkPolicy: VideoPriorityBasedPolicy | null = null;
   audioVideo: AudioVideoFacade | null = null;
@@ -503,18 +502,11 @@ export class DemoMeetingApp
 
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function(result: any) {
-          this.accessToken = result.getAccessToken().getJwtToken();
+          accessToken = result.getAccessToken().getJwtToken();
           console.log('Successfully logged!');
+          console.log(accessToken);
 
-          cognitoUser.getUserAttributes(function(err: any, result: any) {
-            if (err) {
-              alert(err.message || JSON.stringify(err));
-              return;
-            }
-            const uid = result[0].getValue()
-
-            chimeInit(e)
-          });
+          chimeInit(e)
         },
 
         onFailure: function(err: any) {
@@ -660,12 +652,11 @@ export class DemoMeetingApp
                 this.meeting
               )}&name=${encodeURIComponent(DemoMeetingApp.DID
               )}&region=${encodeURIComponent(region
-              )}&uid=${encodeURIComponent(this.uid
               )}`,
               {
                 method: 'POST',
                 headers: {
-                  'Authorization': this.accessToken
+                  'Authorization': accessToken
                 }
               }
             );
@@ -1758,11 +1749,11 @@ export class DemoMeetingApp
     const response = await fetch(
       `${DemoMeetingApp.BASE_URL}join?title=${encodeURIComponent(
         this.meeting
-      )}&name=${encodeURIComponent(this.name)}&region=${encodeURIComponent(this.region)}&uid=${encodeURIComponent('a42cbb78-58e5-464a-b5cd-dd7f24dd9ad0')}`,
+      )}&name=${encodeURIComponent(this.name)}&region=${encodeURIComponent(this.region)}`,
       {
         method: 'POST',
         headers: {
-          'Authorization': this.accessToken
+          'Authorization': accessToken
         }
       }
     );

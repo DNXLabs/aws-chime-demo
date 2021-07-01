@@ -1,5 +1,6 @@
 # Adding Cognito Auth using amazon-cognito-identity-js
 
+### Client side
 
 ```js
 
@@ -48,5 +49,19 @@ cognitoUser.authenticateUser(authenticationDetails, {
         console.log(err);
         alert(err.message || JSON.stringify(err));
     },
+});
+```
+
+
+### Server side
+
+```js
+var params = {
+    AccessToken: request.headers['authorization']
+};
+
+cognito.getUser(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
 });
 ```

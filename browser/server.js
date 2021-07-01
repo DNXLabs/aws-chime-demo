@@ -25,6 +25,7 @@ const indexPage = fs.readFileSync(indexPagePath);
 // Use the MediaRegion property below in CreateMeeting to select the region
 // the meeting is hosted in.
 const chime = new AWS.Chime({ region: 'us-east-1' });
+const cognito = new AWS.CognitoIdentityServiceProvider({ region: 'ap-southeast-2' });
 
 // Set the AWS SDK Chime endpoint. The global endpoint is https://service.chime.aws.amazon.com.
 const endpoint = process.env.ENDPOINT || 'https://service.chime.aws.amazon.com';
@@ -35,7 +36,7 @@ chime.endpoint = new AWS.Endpoint(endpoint);
 function serve(host = '0.0.0.0:8080') {
   // Start an HTTP server to serve the index page and handle meeting actions
   http.createServer({}, async (request, response) => {
-    log(`${request.method} ${request.url} BEGIN`);
+    log(`${request.method} ${request.url} ${JSON.stringify(request.headers['authorization'])} BEGIN`);
     try {
       // Enable HTTP compression
       compression({})(request, response, () => {});
@@ -48,27 +49,32 @@ function serve(host = '0.0.0.0:8080') {
         respond(response, 201, 'application/json', JSON.stringify(require('./debug.js').debug(requestUrl.query), null, 2));
       } else if (request.method === 'POST' && requestUrl.pathname === '/join') {
 
-        // Add your authentication and authorization here
+        var params = {
+          AccessToken: request.headers['authorization']
+        };
 
-        if (!requestUrl.query.title || !requestUrl.query.name || !requestUrl.query.region || !requestUrl.query.uid) {
-          throw new Error('Need parameters: title, name, region, uid');
+        cognito.getUser(params, function(err, data) {
+          if (err) console.log(err, err.stack); // an error occurred
+          else     console.log(data);           // successful response
+        });
+
+        if (!requestUrl.query.title || !requestUrl.query.name || !requestUrl.query.region) {
+          throw new Error('Need parameters: title, name, region');
         }
 
         // Look up the meeting by its title. If it does not exist, create the meeting.
         if (!meetingTable[requestUrl.query.title]) {
-          if (allowedMeetingCreators.find(requestUrl.query.uid)) {
-            meetingTable[requestUrl.query.title] = await chime.createMeeting({
-              // Use a UUID for the client request token to ensure that any request retries
-              // do not create multiple meetings.
-              ClientRequestToken: uuidv4(),
-              // Specify the media region (where the meeting is hosted).
-              // In this case, we use the region selected by the user.
-              MediaRegion: requestUrl.query.region,
-              // Any meeting ID you wish to associate with the meeting.
-              // For simplicity here, we use the meeting title.
-              ExternalMeetingId: requestUrl.query.title.substring(0, 64),
-            }).promise();
-          }
+          meetingTable[requestUrl.query.title] = await chime.createMeeting({
+            // Use a UUID for the client request token to ensure that any request retries
+            // do not create multiple meetings.
+            ClientRequestToken: uuidv4(),
+            // Specify the media region (where the meeting is hosted).
+            // In this case, we use the region selected by the user.
+            MediaRegion: requestUrl.query.region,
+            // Any meeting ID you wish to associate with the meeting.
+            // For simplicity here, we use the meeting title.
+            ExternalMeetingId: requestUrl.query.title.substring(0, 64),
+          }).promise();
         }
 
         // Fetch the meeting info
