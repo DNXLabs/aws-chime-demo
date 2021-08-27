@@ -30,7 +30,7 @@ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
 ```shell
 export STACK_NAME=dnx-chime-serverless
-export S3_BUCKET_NAME=dnx-chime-serverless-bucket
+export S3_BUCKET_NAME=dnx-chime-serverless
 export APP=meeting
 ```
 

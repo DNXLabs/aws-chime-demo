@@ -122,12 +122,12 @@ function spawnOrFail(command, args, options, printOutput = true) {
 }
 
 function appHtml(appName) {
-  return `../browser/dist/${appName}.html`
+  return `./dist/${appName}.html`
 }
 
 function ensureApp(appName) {
   console.log(`Verifying application ${appName}`);
-  if (!fs.existsSync(`../browser/app/${appName}`)) {
+  if (!fs.existsSync(`./app/${appName}`)) {
     console.log(`Application ${appName} does not exist. Did you specify correct name?`);
     process.exit(1);
   }

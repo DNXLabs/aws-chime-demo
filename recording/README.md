@@ -20,8 +20,8 @@ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ## Run deployment script
 
 ```shell
-export STACK_NAME=<stack_name>
-export S3_BUCKET_NAME=<bucket_name>
+export STACK_NAME=dnx-chime-recording
+export S3_BUCKET_NAME=dnx-chime-recording
 export DOCKER_IMAGE=<account_id>.dkr.ecr.<region>.amazonaws.com/<repository_uri>
 ```
 
